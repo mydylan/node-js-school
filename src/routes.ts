@@ -21,4 +21,8 @@ router.post('/users/:id/books', controller.book.createBook);
 router.put('/users/:id/books/:bookId', controller.book.updateBook);
 router.delete('/users/:id/books/:bookId', controller.book.deleteBook);
 
+// FILE ROUTES
+router.post('/service', controller.service.register);
+router.post('/service/:id/execute', controller.service.execute);
+
 export { router };
