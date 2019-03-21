@@ -1,0 +1,83 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Swagger NodeJS app
+  license:
+    name: MIT
+host: localhost:4200
+basePath: /v1
+schemes:
+  - http
+consumes:
+  - application/json
+  - multipart/form-data
+produces:
+  - application/json
+paths:
+  /service:
+    post:
+      summary: Create a service
+      operationId: createService
+      tags:
+        - service
+      parameters:
+        - name: body
+          in: body
+          description: Flow steps which need to saved
+          required: true
+          schema:
+            $ref: "#/definitions/Steps"
+      responses:
+        "201":
+          description: Expected response with id of created service
+        default:
+          description: unexpected error
+          schema:
+            $ref: "#/definitions/Error"
+  /service/{serviceId}/execute:
+    post:
+      summary: Transform file with flow steps by serviceId
+      operationId: executeService
+      tags:
+        - service
+      parameters:
+        - name: serviceId
+          in: path
+          required: true
+          description: The id of the service
+          type: string
+        - name: file
+          in: formData
+          description: File which will be transformed
+          required: true
+          type: file
+      responses:
+        "200":
+          description: Expected response with transformed file
+        default:
+          description: unexpected error
+          schema:
+            $ref: "#/definitions/Error"
+definitions:
+  Steps:
+    type: array
+    items:
+      type: string
+      enum:
+        - ungzip
+        - decrypt
+        - upperCase
+        - lowerCase
+        - removeSpaces
+        - encrypt
+        - gzip
+  Error:
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string

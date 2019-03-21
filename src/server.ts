@@ -8,7 +8,9 @@ import * as dotenv from 'dotenv';
 import { createConnection } from 'typeorm';
 import 'reflect-metadata';
 import * as PostgressConnectionStringParser from 'pg-connection-string';
+import * as serve from 'koa-static';
 
+const koaSwagger = require('koa2-swagger-ui');
 import { logger } from './logging';
 import { config } from './config';
 import { router } from './routes';
@@ -41,6 +43,17 @@ createConnection({
  }).then(async connection => {
 
     const app = new Koa();
+
+    app.use(serve('public'));
+    app.use(
+        koaSwagger({
+            routePrefix: '/swagger',
+            swaggerOptions: {
+                url: '/swagger.yml'
+            }
+        })
+    );
+
 
     // Provides important security headers to make your app more secure
     app.use(helmet());
